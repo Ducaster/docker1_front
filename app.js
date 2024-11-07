@@ -8,8 +8,8 @@ const multer = require("multer");
 const cookieParser = require("cookie-parser");
 const util = require("./utils");
 
-const GUESTBOOK_API_ADDR = process.env.GUESTBOOK_API_ADDR;
-const BACKEND_URI = `${GUESTBOOK_API_ADDR}/snacks`;
+const GUESTBOOK_API_ADDR = "http://localhost:3000"; //process.env.GUESTBOOK_API_ADDR;
+const END_URI = `${GUESTBOOK_API_ADDR}/snacks`;
 const PORT = process.env.PORT || 3001;
 
 // 환경 변수 체크
@@ -36,23 +36,6 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // 파일 업로드 설정
 const upload = multer({ dest: "uploads/" });
-
-// 홈 페이지 라우트에서 스낵 데이터를 가져와서 렌더링
-app.get("/", async (req, res) => {
-  try {
-    const response = await axios.get(BACKEND_URI);
-    const snacks = response.data;
-    const isUserLoggedIn = req.cookies.user === "true";
-
-    console.log("User Logged In:", isUserLoggedIn);
-    console.log("Snacks Data:", snacks);
-
-    res.render("home", { snacks, user: isUserLoggedIn });
-  } catch (error) {
-    console.error("Error fetching snacks:", error);
-    res.render("home", { snacks: [], user: false });
-  }
-});
 
 // 서버 시작
 app.listen(PORT, () => {
